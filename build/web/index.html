@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script >
+
+            $(document).ready(init);
+            function init() {
+
+                $("button#getPlayer").click(getPlayer);
+                $("button#getAll").click(getAll);
+            }
+
+            function getPlayer() {
+
+                var request = $.ajax({
+                    url: "api/player/" + $("#PlayerID").val(),
+                    dataType: "json"
+                });
+
+                request.done(function (player) {
+                    $("#id").text("ID: " + player.id);
+                    $("#name").text("Name: " + player.name);
+                    $("#country").text("Country: " + player.country);
+                    $("#error").text("");
+                });
+
+                request.fail(function (player) {
+                    $("#id").text("ID: ");
+                    $("#name").text("Name: ");
+                    $("#country").text("Country: ");
+                    $("#error").text("No player by that id");
+                });
+            }
+
+            function getAll() {
+
+                $("tbody").empty();
+                var request = [];
+                request = $.ajax({
+                    url: "api/AllPlayerNames",
+                    dataType: "json"
+                });
+                request.done(function (request) {
+                    $.each(request, function (i, player) {
+                        var player = request[i];
+                        $("tbody").append("<tr>\n\
+                                        <td>" + player.id + "</td>\n\
+                                        <td>" + player.name + "</td>\n\
+                                        <td>" + player.country + "</td>\n\
+                                        <td></td>\n\
+                                       </tr>");
+                    });
+                });
+
+                request.fail(function (request) {
+                    $("tbody").append("<tr>\n\
+                                        <td></td>\n\
+                                        <td></td>\n\
+                                        <td></td>\n\
+                                        <td>Failed to get All</td>\n\
+                                       </tr>");
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <div style="margin:1.1em">
+
+            <form>
+                Player ID:<br>
+                <input type="text" name="PlayerID" id="PlayerID">
+                <br>
+            </form>
+
+            <button id="getPlayer" style="margin:1.1em">Get player info</button>
+            <br>
+            <ul class="list" id="list">
+                <li id="id"></li>
+                <li id="name"></li>
+                <li id="country"></li>
+                <li id="error"></li>
+
+            </ul>
+        </div>
+        <div>
+
+            <button id="getAll" style="margin:1.1em">Get all players</button>
+            <table class="table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Country</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
